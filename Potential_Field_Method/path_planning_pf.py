@@ -20,28 +20,12 @@ def compute_potential( p  ):
     x = p[0]
     y = p[1]
 
-    goal_potential = 0.5*((x-x_g)**2+(y-y_g)**2)
-    # dist_obs_1 = jnp.sqrt((x-x_o_1)**2+(y-y_o_1)**2)
-    # dist_obs_2 = jnp.sqrt((x-x_o_2)**2+(y-y_o_2)**2)
-    # dist_obs = jnp.min( jnp.hstack(( dist_obs_1, dist_obs_2   ))    )
+    goal_potential = 0.5*((x-x_g)**2+(y-y_g)**2) ### c_g
 
     dist_obs = jnp.sqrt((x-x_o)**2+(y-y_o)**2)
 
-    # if(dist_obs<=d_o):
-        # obstacle_potential = eta*((1/dist_obs)-(1/d_o))**2
-    #
-    # if(dist_obs>d_o):
-    #     obstacle_potential = 0.0
-
-    # obstacle_potential = eta*jnp.max( jnp.hstack((0.0,  dist_obs )) )
-    # obstacle_potential = (1/eta)*jnp.log(1+jnp.exp(eta*dist_obs))
-    # print(obstacle_potential)
-
     obstacle_potential = eta*((1/dist_obs)-(1/d_o))**2
 
-    obstacle_potential = jnp.min(jnp.hstack(( eta*((1/dist_obs)-(1/d_o))**2, 40.0) ) )
-
-    # smooth_potential = (x-2*x_traj[i-1]-x_traj[i-2])**2+(y-2*y_traj[i-1]-y_traj[i-2])**2
 
     total_potential = goal_potential+obstacle_potential
 
@@ -52,7 +36,7 @@ def compute_potential_obsfree(p):
     x = p[0]
     y = p[1]
 
-    goal_potential = 0.5*((x-x_g)**2+(y-y_g)**2)
+    goal_potential = 0.5*((x-x_g)**2+(y-y_g)**2) ## c_g
 
     return goal_potential
 
@@ -69,12 +53,15 @@ y_g = 6.0
 x_o = 3.1
 y_o = 3.0
 
-# eta = 100.0
+eta = 1000.0
 
-eta = 500.0
+# eta = 10.0
 # eta = 0.001
 
-d_o = 1.7
+
+d_o = 2.7
+
+obs_rad = 1.5
 
 potential_grad = jit(grad(compute_potential))
 
@@ -92,7 +79,7 @@ y_traj = np.ones(maxiter)*y_init
 
 v = 0.1
 
-delt = 0.01
+delt = 0.1
 
 for i in range(1, maxiter):
 
@@ -130,11 +117,14 @@ scipy.io.savemat('y_pf.mat', {'y': y_traj[0:i]}) ########## matrix of y position
 
 
 th = np.linspace(0, 2*np.pi, 100)
-x_obs = x_o+d_o*np.cos(th)
-y_obs = y_o+d_o*np.sin(th)
+x_obs = x_o+obs_rad*np.cos(th)
+y_obs = y_o+obs_rad*np.sin(th)
 
 
 ############################################################################# Visualization over cost surface
+
+###### path_planning_pf.py
+
 
 num_samples = 100
 
@@ -146,21 +136,23 @@ x_grid, y_grid = np.meshgrid( x_workspace, y_workspace)
 
 goal_potential = 0.5*((x_grid-x_g)**2+(y_grid-y_g)**2)
 
-d_0 = 1.5
+# d_0 = 1.5
 
-dist_obs = -np.sqrt((x_grid-x_o)**2+(y_grid-y_o)**2)+d_0
+dist_obs = np.sqrt((x_grid-x_o)**2+(y_grid-y_o)**2)
 
 # dist_obs = sqrt((x_grid-x_o)**2+(y_grid-y_o)**2)
 
 
 # eta = 0.03
-eta = 30.0
+# eta = 30.0
 # obstacle_potential = maximum( zeros(( num_samples, num_samples )),  0.5*eta*((1/dist_obs)-(1/d_0))**2 )
 
 # obstacle_potential = 0.5*eta*((1/dist_obs)-(1/d_0))**2 
 
+obstacle_potential = np.minimum(eta*((1/dist_obs)-(1/d_o))**2, 40.0*np.ones((num_samples, num_samples  ))  ) # c_o
 
-obstacle_potential = eta*np.maximum( np.zeros(( num_samples, num_samples  )), dist_obs         )
+
+# obstacle_potential = eta*np.maximum( np.zeros(( num_samples, num_samples  )), dist_obs         )
 
 
 combined_potential = obstacle_potential+goal_potential

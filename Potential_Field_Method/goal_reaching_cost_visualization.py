@@ -7,6 +7,8 @@ from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 
+# goal_reaching_cost_visualization.py
+
 num_samples = 100
 
 x_0 = -6.0
@@ -114,5 +116,7 @@ plt.plot(x_traj, y_traj, '-k', linewidth = 3.0)
 plt.plot(x_0*ones(1), y_0*ones(1), 'og', linewidth = 3.0)
 plt.plot(x_f*ones(1), y_f*ones(1), 'om', linewidth = 3.0)
 
+plt.figure(6)
+plt.contour(combined_potential, linspace(combined_potential.min(),combined_potential.max(),25)) 
 
 plt.show()
