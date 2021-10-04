@@ -83,7 +83,7 @@ delt = 0.1
 
 for i in range(1, maxiter):
 
-    # start = time.time()
+    start = time.time()
     dist_obs = jnp.sqrt((x_init-x_o)**2+(y_init-y_o)**2)
     if(dist_obs<=d_o):
 
@@ -109,7 +109,7 @@ for i in range(1, maxiter):
     # eta = jnp.max( jnp.hstack(( 1/dist_obs, 500.0)))
 
 
-    # print(time.time()-start)
+    print(time.time()-start)
 
 
 scipy.io.savemat('x_pf.mat', {'x': x_traj[0:i]}) ########### matrix for x position of the vehicle
