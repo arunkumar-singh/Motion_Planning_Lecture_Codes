@@ -1,6 +1,8 @@
 
 
 
+
+
 import jax.numpy as jnp
 import numpy as np
 from jax import jit, grad
@@ -20,16 +22,20 @@ def compute_potential( p  ):
     x = p[0]
     y = p[1]
 
-    goal_potential = 0.5*((x-x_g)**2+(y-y_g)**2) ### c_g
+    # goal_potential = 0.5*((x-x_g)**2+(y-y_g)**2) ### c_g
 
+    goal_potential = 0.5*jnp.sqrt((x-x_g)**2+(y-y_g)**2)
     dist_obs = jnp.sqrt((x-x_o)**2+(y-y_o)**2)
 
-    obstacle_potential = eta*((1/dist_obs)-(1/d_o))**2
 
-    # obstacle_potential = jnp.minimum(0, -dist_obs+d_o   )
+    # obstacle_potential = eta*((1/dist_obs)-(1/d_o))**2
+
+    obstacle_potential = jnp.maximum(0, -dist_obs+d_o   )**2
+    # obstacle_potential = 1/(1+jnp.exp(-dist_obs+d_o))
 
 
-    total_potential = goal_potential+obstacle_potential
+
+    total_potential = goal_potential+10*obstacle_potential
 
     return total_potential
 
@@ -114,7 +120,7 @@ for i in range(1, maxiter):
     print(time.time()-start)
 
 
-scipy.io.savemat('potential_path_pf.mat', {'x': x_traj[0:i], 'y': y_traj[0:i]   }) ########### matrix for x position of the vehicle
+# scipy.io.savemat('potential_path_pf.mat', {'x': x_traj[0:i], 'y': y_traj[0:i]   }) ########### matrix for x position of the vehicle
 # scipy.io.savemat('y_pf.mat', {'y': y_traj[0:i]}) ########## matrix of y position of the vehicle
 
 
@@ -136,7 +142,10 @@ y_workspace = np.linspace(-2.0, 6.0, num_samples)
 
 x_grid, y_grid = np.meshgrid( x_workspace, y_workspace)
 
-goal_potential = 0.5*((x_grid-x_g)**2+(y_grid-y_g)**2)
+# goal_potential = 0.5*((x_grid-x_g)**2+(y_grid-y_g)**2)
+goal_potential = 0.5*jnp.sqrt((x-x_g)**2+(y-y_g)**2)
+
+
 
 # d_0 = 1.5
 
@@ -151,8 +160,11 @@ dist_obs = np.sqrt((x_grid-x_o)**2+(y_grid-y_o)**2)
 
 # obstacle_potential = 0.5*eta*((1/dist_obs)-(1/d_0))**2 
 
-obstacle_potential = np.minimum(eta*((1/dist_obs)-(1/d_o))**2, 40.0*np.ones((num_samples, num_samples  ))  ) # c_o
+# obstacle_potential = np.minimum(eta*((1/dist_obs)-(1/d_o))**2, 40.0*np.ones((num_samples, num_samples  ))  ) # c_o
 
+obstacle_potential = np.maximum(0, -dist_obs+d_o   )
+
+# obstacle_potential = 10/(1+np.exp(-dist_obs+d_o))
 
 # obstacle_potential = eta*np.maximum( np.zeros(( num_samples, num_samples  )), dist_obs         )
 

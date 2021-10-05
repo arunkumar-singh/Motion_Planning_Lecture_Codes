@@ -5,6 +5,14 @@ import jax.numpy as jnp
 import matplotlib.pyplot as plt 
 from jax import grad, jit
 
+from scipy.io import loadmat
+
+path_data = loadmat('potential_path_pf.mat')
+x_pf = path_data['x'][0]
+y_pf = path_data['y'][0]
+
+
+
 def compute_potential( p  ):
     x = p[0]
     y = p[1]
@@ -52,7 +60,7 @@ eta = 1000.0
 
 d_o = 2.7
 
-num_samples = 100
+num_samples = 30
 
 potential_grad = jit(grad(compute_potential))
 potential_grad_obsfree = jit(grad(compute_potential_obsfree))
@@ -81,11 +89,11 @@ for i in range(0, num_samples):
 			
 			x_flow[i, j ], y_flow[i, j] = potential_grad(jnp.hstack(( x_grid[i, j], y_grid[i, j])) )
 
-		x_flow[i, j] = -x_flow[i, j]/jnp.sqrt( x_flow[i, j]**2+y_flow[i, j]**2  )
-		y_flow[i, j] = -y_flow[i, j]/jnp.sqrt( x_flow[i, j]**2+y_flow[i, j]**2  )
+		# x_flow[i, j] = -x_flow[i, j]/jnp.sqrt( x_flow[i, j]**2+y_flow[i, j]**2  )
+		# y_flow[i, j] = -y_flow[i, j]/jnp.sqrt( x_flow[i, j]**2+y_flow[i, j]**2  )
 
-		# x_flow[i, j] = -x_flow[i, j]
-		# y_flow[i, j] = -y_flow[i, j]
+		x_flow[i, j] = -x_flow[i, j]
+		y_flow[i, j] = -y_flow[i, j]
 		
 
 
@@ -99,9 +107,13 @@ step = 1
 scale = 1
 
 fig, ax = plt.subplots(figsize=(20, 20))
-ax.streamplot(x_grid, y_grid, x_flow, y_flow)
+ax.streamplot(x_grid, y_grid, x_flow, y_flow, linewidth = 2.0)
 plt.plot(x_obs, y_obs, '-k', linewidth = 3.0)
-plt.plot(x_g*np.ones(1), y_g*np.ones(1), 'om', markersize = 10)
+# plt.plot(x_g*np.ones(1), y_g*np.ones(1), 'om', markersize = 10)
+plt.plot(x_pf[-1]*np.ones(1), y_pf[-1]*np.ones(1), 'om', markersize = 10)
+plt.plot(x_pf[0]*np.ones(1), y_pf[0]*np.ones(1), 'og', markersize = 10)
+
+plt.plot(x_pf, y_pf, '-r', linewidth = 2.0)
 plt.axis('square')
 
 plt.show()

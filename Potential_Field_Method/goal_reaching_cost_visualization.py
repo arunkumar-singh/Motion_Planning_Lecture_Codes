@@ -70,12 +70,24 @@ plt.ylabel('y')
 
 
 
-plt.figure(2)
-im = plt.imshow(goal_potential, cmap=plt.cm.RdBu, extent=(-6, 6, 6, -6), interpolation='bilinear')
-plt.colorbar(im)
-plt.plot(x_traj, y_traj, '-k', linewidth = 3.0)
+# plt.figure(2)
+# im = plt.imshow(goal_potential, cmap=plt.cm.RdBu, extent=(-6, 6, 6, -6), interpolation='bilinear')
+# plt.colorbar(im)
+# plt.plot(x_traj, y_traj, '-k', linewidth = 3.0)
+# plt.plot(x_0*ones(1), y_0*ones(1), 'og', markersize = 10.0)
+# plt.plot(x_f*ones(1), y_f*ones(1), 'om', markersize = 10.0)
+
+
+figure_2 = plt.figure(2)
+ax_2 = plt.axes()
+
+# sns.heatmap(cost_matrix_second_obs, xticklabels=False, yticklabels=False)
+c= plt.pcolormesh(x_grid, y_grid, goal_potential)
+# c= plt.pcolormesh(X, Y, cost_matrix_second_obs, cmap="RdBu")
+ax_2.axis([-6,6, -6, 6])
+figure_2.colorbar(c, ax=ax_2)  
+plt.plot(x_f*ones(1), y_f*ones(1), 'om', markersize = 20.0)
 plt.plot(x_0*ones(1), y_0*ones(1), 'og', markersize = 10.0)
-plt.plot(x_f*ones(1), y_f*ones(1), 'om', markersize = 10.0)
 
 
 # plt.title('$z=(1-x^2+y^3) e^{-(x^2+y^2)/2}$')
@@ -115,6 +127,18 @@ plt.colorbar(im)
 plt.plot(x_traj, y_traj, '-k', linewidth = 3.0)
 plt.plot(x_0*ones(1), y_0*ones(1), 'og', linewidth = 3.0)
 plt.plot(x_f*ones(1), y_f*ones(1), 'om', linewidth = 3.0)
+
+
+figure_5 = plt.figure(5)
+ax_5 = plt.axes()
+
+# sns.heatmap(cost_matrix_second_obs, xticklabels=False, yticklabels=False)
+c= plt.pcolormesh(x_grid, y_grid, combined_potential)
+# c= plt.pcolormesh(X, Y, cost_matrix_second_obs, cmap="RdBu")
+ax_5.axis([-6,6, -6, 6])
+figure_5.colorbar(c, ax=ax_2)  
+plt.plot(x_f*ones(1), y_f*ones(1), 'om', markersize = 20.0)
+plt.plot(x_0*ones(1), y_0*ones(1), 'og', markersize = 10.0)
 
 plt.figure(6)
 plt.contour(combined_potential, linspace(combined_potential.min(),combined_potential.max(),25)) 
