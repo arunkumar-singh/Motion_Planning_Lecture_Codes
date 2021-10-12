@@ -1,85 +1,93 @@
 
-####### goal_reaching_planar
 
-import jax.numpy as jnp
-import numpy as np
+
+import numpy as  np
 import matplotlib.pyplot as plt
-from jax import jit, grad
-from jax.config import config; config.update("jax_enable_x64", True)
+import time
+
+###planar_man_jacobian.py
 
 
-def compute_goal_potential( q  ):
+def jac_planar(q):
+
     q_1 = q[0]
     q_2 = q[1]
     q_3 = q[2]
 
-    x_e = l_1*jnp.cos(q_1)+l_2*jnp.cos(q_1+q_2)+l_3*jnp.cos(q_1+q_2+q_3)
-    y_e = l_1*jnp.sin(q_1)+l_2*jnp.sin(q_1+q_2)+l_3*jnp.sin(q_1+q_2+q_3)
+    jac_theta_row_1 = np.hstack(( -l_1*np.sin(q_1)-l_2*np.sin(q_1+q_2)-l_3*np.sin(q_1+q_2+q_3), -l_2*np.sin(q_1+q_2)-l_3*np.sin(q_1+q_2+q_3),  -l_3*np.sin(q_1+q_2+q_3)   ))
+    jac_theta_row_2 = np.hstack(( l_1*np.cos(q_1)+l_2*np.cos(q_1+q_2)+l_3*np.cos(q_1+q_2+q_3), l_2*np.cos(q_1+q_2)+l_3*np.cos(q_1+q_2+q_3),  l_3*np.cos(q_1+q_2+q_3)   ))
+    jac_theta_row_3 = np.hstack(( 1.0, 1.0,  1.0   ))
 
-    goal_potential = (x_e-x_f)**2+(y_e-y_f)**2
+    jac_theta = np.vstack(( jac_theta_row_1, jac_theta_row_2    ))
 
-    return goal_potential
+    return jac_theta
 
-def compute_fk(q):
+
+
+def fk_fun(q):
     q_1 = q[0]
     q_2 = q[1]
     q_3 = q[2]
 
-    x_e = l_1*jnp.cos(q_1)+l_2*jnp.cos(q_1+q_2)+l_3*jnp.cos(q_1+q_2+q_3)
-    y_e = l_1*jnp.sin(q_1)+l_2*jnp.sin(q_1+q_2)+l_3*jnp.sin(q_1+q_2+q_3)
+    x_e = l_1*np.cos(q_1)+l_2*np.cos(q_1+q_2)+l_3*np.cos(q_1+q_2+q_3)
+    y_e = l_1*np.sin(q_1)+l_2*np.sin(q_1+q_2)+l_3*np.sin(q_1+q_2+q_3)
 
-    return x_e, y_e
+    return x_e, y_e, q_1+q_2+q_3
+
 
 l_1 = 1.5
 l_2 = 1.5
 l_3 = 1.5
 
-# x_f = 4.0
-# y_f = 3.5
+x_f = 4.0
+y_f = 3.5
 
 
-### goal_reaching_planar.py
+k = 1.0
 
-# x_f = np.random.uniform(-4.0, 4.0)
-# y_f = np.random.uniform(-4.0, 4.0)
+x_f = np.random.uniform(-4.0, 4.0)
+y_f = np.random.uniform(-4.0, 4.0)
+gamma_f = 0.0
 
-x_f = -0.75
+x_f = -0.45
 y_f =  -0.59
 
 
-maxiter = 1000
+
+
+maxiter = 60000
 x_traj = np.ones(maxiter)
 y_traj = np.ones(maxiter)
+gamma_traj = np.ones(maxiter)
 
-# q_init = jnp.zeros(3)
-# q_init = jnp.ones(3)*jnp.pi/2
-q_init = jnp.hstack(( 0.1, -0.6, 0.0   ))
-# q_init = jnp.asarray(np.random.uniform(-2.1, 2.1 , 3   )   )
+q_init = np.hstack((0.1, 0.0, 0.0   ))
+# q_init = np.hstack(( 0.1, 0.1, 0.1   ))
 q_traj = np.zeros((maxiter, 3))
 
 man_x_init = np.hstack((0.0, l_1*np.cos(q_init[0]), l_1*np.cos(q_init[0])+l_2*np.cos(q_init[0]+q_init[1]), l_1*np.cos(q_init[0])+l_2*np.cos(q_init[0]+q_init[1])+l_3*np.cos(q_init[0]+q_init[1]+q_init[2])   ))
 man_y_init = np.hstack((0.0, l_1*np.sin(q_init[0]), l_1*np.sin(q_init[0])+l_2*np.sin(q_init[0]+q_init[1]), l_1*np.sin(q_init[0])+l_2*np.sin(q_init[0]+q_init[1])+l_3*np.sin(q_init[0]+q_init[1]+q_init[2])   ))
-
-
-grad_fun = jit(grad(compute_goal_potential))
-fk_fun = jit(compute_fk)
-goal_potential_fun = jit(compute_goal_potential)
+x_traj[0], y_traj[0], gamma_traj[0] = fk_fun(q_init)
 cost_track = np.ones(maxiter-1)
-x_traj[0], y_traj[0] = fk_fun(q_init)
 
 delt = 0.01
+
+print(x_f, y_f)
+
+
 for i in range(1, maxiter):
-    grad_vec = grad_fun(q_init)
-    q_init = q_init-delt*grad_vec
-    # q_init = jnp.clip(q_init, q_min, q_max   )
-    x_traj[i], y_traj[i] = fk_fun(q_init)
-    cost_track[i-1] = goal_potential_fun(q_init)
+
+    xdot = k*(x_f-x_traj[i-1])
+    ydot = k*(y_f-y_traj[i-1])
+    gammadot = k*(gamma_f-gamma_traj[i-1])
+    jac = jac_planar(q_init)
+    qdot = np.dot(np.linalg.pinv(jac), np.hstack(( xdot, ydot   )) )
+
+    q_init = q_init+qdot*delt
+    q_init = np.clip(q_init, -2.1*np.ones(3),  2.1*np.ones(3))
+    x_traj[i], y_traj[i], gamma_traj[i] = fk_fun(q_init)
+    cost_track[i-1] = np.sqrt( (x_f-x_traj[i])**2+(y_f-y_traj[i])**2              )
     q_traj[i] = q_init
 
-
-
-
-print(man_x_init, man_y_init, q_init[0])
 
 q_fin = q_traj[-1]
 
