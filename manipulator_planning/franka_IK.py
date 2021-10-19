@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import time
 # import scipy.io
 from mpl_toolkits.mplot3d import Axes3D
+import  scipy.io 
 
 
 def compute_fk(q):
@@ -151,6 +152,12 @@ for i in range(0, maxiter):
     q = jnp.clip(q, jnp.asarray(q_min),  jnp.asarray(q_max))
     x_traj[i, 0], x_traj[i, 1], x_traj[i, 2], orient_traj[i,0], orient_traj[i,1], orient_traj[i,2]  = compute_fk_jit(q)
     cost_track[i] = compute_cost_jit(q)
+    q_traj[i] = q
+
+
+
+scipy.io.savemat('frank_joint_traj.mat', {'q_traj': q_traj }) ########## matrix of y position of the vehicle
+
 
 
 plt.figure(1)

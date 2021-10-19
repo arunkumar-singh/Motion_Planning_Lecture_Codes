@@ -55,12 +55,12 @@ y_f =  -0.59
 
 
 
-maxiter = 60000
+maxiter = 600
 x_traj = np.ones(maxiter)
 y_traj = np.ones(maxiter)
 gamma_traj = np.ones(maxiter)
 
-q_init = np.hstack((0.1, 0.0, 0.0   ))
+q_init = np.hstack((0.1, 0.1, 0.1   ))
 # q_init = np.hstack(( 0.1, 0.1, 0.1   ))
 q_traj = np.zeros((maxiter, 3))
 
