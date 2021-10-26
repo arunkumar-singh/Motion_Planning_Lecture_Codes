@@ -29,7 +29,7 @@ q_pickup = np.random.uniform(q_min, q_max, (7, ))
 # fig = plt.figure()
 # ax = Axes3D(fig)
 # ax.view_init(elev=106., azim=39)
-robot.plot(q_data[0:50], limits = [-1.0, 1.0, -1.0, 1.0, 0, 1.0])
+robot.plot(q_data[0:100], limits = [-1.0, 1.0, -1.0, 1.0, 0, 1.0])
 
 print(robot.jacob0(robot.qz))
 

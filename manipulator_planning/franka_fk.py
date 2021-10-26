@@ -5,6 +5,10 @@
 from sympy import *
 import numpy as np
 
+
+### franka_fk.py
+
+
 alpha1 = 0.0
 alpha2 = -pi/2
 alpha3 = pi/2
@@ -48,7 +52,35 @@ T3 = np.array([ [cq3, -sq3, 0.0, a3  ], [ sq3*cos(alpha3), cq3*cos(alpha3), -sin
 T4 = np.array([ [cq4, -sq4, 0.0, a4  ], [ sq4*cos(alpha4), cq4*cos(alpha4), -sin(alpha4), -d4*sin(alpha4)  ], [ sq4*sin(alpha4), cq4*sin(alpha4), cos(alpha4), d4*cos(alpha4)   ], [0.0, 0.0, 0.0, 1.0 ]   ])
 T5 = np.array([ [cq5, -sq5, 0.0, a5  ], [ sq5*cos(alpha5), cq5*cos(alpha5), -sin(alpha5), -d5*sin(alpha5)  ], [ sq5*sin(alpha5), cq5*sin(alpha5), cos(alpha5), d5*cos(alpha5)   ], [0.0, 0.0, 0.0, 1.0 ]   ])
 T6 = np.array([ [cq6, -sq6, 0.0, a6  ], [ sq6*cos(alpha6), cq6*cos(alpha6), -sin(alpha6), -d6*sin(alpha6)  ], [ sq6*sin(alpha6), cq6*sin(alpha6), cos(alpha6), d6*cos(alpha6)   ], [0.0, 0.0, 0.0, 1.0 ]   ])
+
+
+#6_T_7
 T7 = np.array([ [cq7, -sq7, 0.0, a7  ], [ sq7*cos(alpha7), cq7*cos(alpha7), -sin(alpha7), -d7*sin(alpha7)  ], [ sq7*sin(alpha7), cq7*sin(alpha7), cos(alpha7), d7*cos(alpha7)   ], [0.0, 0.0, 0.0, 1.0 ]   ])
+
+
+#7_T_8
 T8 = np.array([ [cos(q8), -sin(q8), 0.0, a8  ], [ sin(q8)*cos(alpha8), cos(q8)*cos(alpha8), -sin(alpha8), -d8*sin(alpha8)  ], [ sin(q8)*sin(alpha8), cos(q8)*sin(alpha8), cos(alpha8), d8*cos(alpha8)   ], [0.0, 0.0, 0.0, 1.0 ]   ])
 
+
+
+# 0_T_8 = 
 T_fin = T1.dot(T2).dot(T3).dot(T4).dot(T5).dot(T6).dot(T7).dot(T8)
+
+R_fin = T_fin[0:3, 0:3]
+
+t_fin = T_fin[0:3, 3]
+
+
+
+print('r_11=',R_fin[0,0])
+print('r_12=',R_fin[0,1])
+print('r_13=',R_fin[0,2])
+print('r_32=',R_fin[2,1])
+print('r_33=',R_fin[2,2])
+
+print('...........')
+
+print('x= ', t_fin[0])
+
+
+

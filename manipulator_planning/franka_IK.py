@@ -12,6 +12,7 @@ import time
 from mpl_toolkits.mplot3d import Axes3D
 import  scipy.io 
 
+################ franka_Ik.py
 
 def compute_fk(q):
     q_1 = q[0]
@@ -60,7 +61,7 @@ def compute_fk(q):
 
 
 
-
+###### c_g takes in q/theta and gives u squared error
 def compute_potential_cost(q):
 
     q_1 = q[0]
@@ -136,6 +137,9 @@ compute_cost_jit = jit(compute_potential_cost)
 
 x_f, y_f, z_f, roll_f, pitch_f, yaw_f = compute_fk(jnp.asarray(q_test))
 
+roll_f = 0.0
+pitch_f = 0.0
+yaw_f = 0.0
 # print(x_f, y_f, z_f, roll_f, pitch_f)
 
 q = jnp.asarray((q_min+q_max)/2.0)
