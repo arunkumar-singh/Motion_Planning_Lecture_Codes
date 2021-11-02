@@ -1,5 +1,8 @@
 
 
+
+########### point_to_point_traj.py
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -11,6 +14,8 @@ ydot_0 = 0.0
 xddot_0 = 0.0
 yddot_0 = 0.0
 
+
+############ different goal positions
 x_f = np.hstack(( 100.0, 100.0, 100.0, 100.0, 80, 80.0, 80.0, 80.0, 80.0, 80   ))
 y_f = np.hstack(( 5.0, 2.0, 0.0, -2.0, -5.0,  5.0, 2.0, 0.0, -2.0, -5.0    ))
 
