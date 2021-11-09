@@ -7,7 +7,7 @@ from numpy import *
 import matplotlib.pyplot as plt
 
 
-######### final_cost_poly_traj
+######### mutliple_cost_function.py
 
 x_to = 0.0
 y_to = 0.0
@@ -94,9 +94,9 @@ s_x_mid = hstack(( x_t1, x_t2  ))
 s_y_mid = hstack(( y_t1, y_t2  ))
 
 
-w_end = 1.0
+w_end = 10**6
 w_mid = 1.0
-w_acc = 1.0
+w_acc = 10.0
 
 Qx_end = w_end*dot(Hx_end.T, Hx_end)
 qx_end = -w_end*dot(Hx_end.T, s_x_end-dot(Gx_end, c_x_tilda))
@@ -111,7 +111,7 @@ Qx = Qx_end+Qx_acc+Qx_mid
 qx = qx_end+qx_acc+qx_mid
 
 sol_x = linalg.solve(-Qx, qx) ###### -Qx^(-1)qx
-
+############# c_x
 
 ################################
 
@@ -128,12 +128,14 @@ Qy = Qy_end+Qy_acc+Qy_mid
 qy = qy_end+qy_acc+qy_mid
 
 sol_y = linalg.solve(-Qy, qy)
+################ c_y
+
 
 x = dot(A_x, c_x_tilda)+dot(P_x, sol_x)
 y = dot(A_y, c_y_tilda)+dot(P_y, sol_y)
 
-xdot = dot(A_xdot, c_x_tilda)+dot(P_xdot, sol_x)
-ydot = dot(A_ydot, c_y_tilda)+dot(P_ydot, sol_y)
+xddot = dot(A_xddot, c_x_tilda)+dot(P_xddot, sol_x)
+yddot = dot(A_yddot, c_y_tilda)+dot(P_yddot, sol_y)
 
 plt.figure(1)
 plt.plot(x, y, '-', linewidth = 3.0)
@@ -145,8 +147,8 @@ plt.plot(x_t2*ones(1), y_t2*ones(1), 'ok', markersize = 16.0)
 
 plt.figure(2)
 
-plt.plot(xdot, '-r', linewidth = 3.0)
-plt.plot(ydot, '-b', linewidth = 3.0)
+plt.plot(xddot, '-r', linewidth = 3.0)
+plt.plot(yddot, '-b', linewidth = 3.0)
 
 
 

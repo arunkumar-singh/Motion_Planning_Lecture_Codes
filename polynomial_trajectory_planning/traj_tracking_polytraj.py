@@ -6,7 +6,7 @@ from numpy import *
 import matplotlib.pyplot as plt
 from scipy.io import loadmat
 
-################ traj_tracking_polytraj
+################ traj_tracking_polytraj.py
 
 x_traj_temp = loadmat('x_traj_desired_quad.mat')
 x_d = x_traj_temp['x_traj'].squeeze()
@@ -83,8 +83,8 @@ s_y_end = hstack(( y_tf, ydot_tf, yddot_tf   ))
 c_x_tilda = hstack(( x_to, xdot_to, xddot_to   ))
 c_y_tilda = hstack(( y_to, ydot_to, yddot_to   ))
 
-w_1 = 1.0
-w_2 = 10**2.0
+w_1 = 1
+w_2 = 10**5
 # x_d = linspace(x_to, x_tf*10, num_samples)
 # y_d = 0.5*y_tf*ones(num_samples)
 
