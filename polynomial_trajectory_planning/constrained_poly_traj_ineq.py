@@ -50,15 +50,15 @@ delt = 0.02
 vx_min = -1.3
 vx_max = 1.3
 
-vy_min = -1.3
-vy_max = 1.3
+vy_min = -2.3
+vy_max = 2.3
 
 
-ax_min = -0.5
-ax_max = 0.5
+ax_min = -1.5
+ax_max = 1.5
 
-ay_min = -0.5
-ay_max = 0.5
+ay_min = -1.5
+ay_max = 1.5
 
 
 

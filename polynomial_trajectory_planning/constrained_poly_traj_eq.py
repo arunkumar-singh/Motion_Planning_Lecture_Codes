@@ -119,8 +119,8 @@ qy = qy_tr+qy_acc
 # sol_y = linalg.solve(-Qy, qy)
 
 
-Mx_eq = Hx_end
-nx_eq = sx_end-dot(Gx_end, c_x_tilda)
+Mx_eq = Hx_end ############ the M matrix
+nx_eq = sx_end-dot(Gx_end, c_x_tilda) ### n vector
 
 My_eq = Hy_end
 ny_eq = sy_end-dot(Gy_end, c_y_tilda)

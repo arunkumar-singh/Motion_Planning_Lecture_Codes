@@ -94,9 +94,9 @@ s_x_mid = hstack(( x_t1, x_t2  ))
 s_y_mid = hstack(( y_t1, y_t2  ))
 
 
-w_end = 10**6
+w_end = 1
 w_mid = 1.0
-w_acc = 10.0
+w_acc = 1.0
 
 Qx_end = w_end*dot(Hx_end.T, Hx_end)
 qx_end = -w_end*dot(Hx_end.T, s_x_end-dot(Gx_end, c_x_tilda))
