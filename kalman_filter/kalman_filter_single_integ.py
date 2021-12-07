@@ -62,6 +62,7 @@ y_init = 0.0
 x_beacon = 0.2
 y_beacon = 0.2
 
+
 A_motion = identity(num_state)
 B_motion = identity(num_state)*delt
 
